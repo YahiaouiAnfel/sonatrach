@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style> /* set the CSS */
+
+body { font: 12px Arial;}
+
+path { 
+   /* stroke: steelblue;*/
+    stroke-width: 3;
+    fill: none;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+<!--.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 60px;
+  height: 12px;
+  padding: 8px;
+  margin-top: -20px;
+  font: 10px sans-serif;
+  background: #ddd;
+  pointer-events: none;
+}-->
+/* basic positioning */
+.legend { list-style: none; }
+.legend li { float: left; margin-right: 10px; }
+.legend span { border: 2px solid #ccc; float: left; width: 12px; height: 12px; margin: 2px;}
+/* your colors */
+.legend .realisation { background-color: #FF7F0E; }
+.legend .prevision { background-color: #1f77b4; }
+
+
+
+div.tooltip {  
+   position: absolute;  
+   text-align: center;           
+  width: 60px; 
+  height: 28px;                 
+  padding: 2px;  
+  font: 12px sans-serif;  
+  background: lightsteelblue; 
+  border: 0px;      
+  border-radius: 8px; 
+  pointer-events: none;         }
+  
+   .y .tick line {
+    stroke: #ddd;
+  }
+  
+  svg {
+    font: 10px sans-serif;
+    shape-rendering: crispEdges;
+  }
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+  }
+ 
+  path.domain {
+    stroke: none;
+  }
+ 
+</style>
+<body>
+<!-- load the d3.js library -->  
+<script src="./d3.v3.min.js"></script>
+
+
+
+<div id="Cpt">
+<ul class="legend">
+    <li><span class="realisation"></span> realisation</li>
+    <li><span class="prevision"></span> prevision</li>
+	
+</ul>
+</div>
+<script src="./line.js"></script>
+
+</body>

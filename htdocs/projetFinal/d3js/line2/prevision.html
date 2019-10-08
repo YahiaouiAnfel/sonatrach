@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style> /* set the CSS */
+
+body { font: 12px Arial;}
+
+path { 
+   /* stroke: steelblue;*/
+    stroke-width: 3;
+    fill: none;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 60px;
+  height: 12px;
+  padding: 8px;
+  margin-top: -20px;
+  font: 10px sans-serif;
+  background: #ddd;
+  pointer-events: none;
+}
+/* basic positioning */
+.legend { list-style: none; }
+.legend li { float: left; margin-right: 10px; }
+.legend span { border: 1px solid #ccc; float: left; width: 12px; height: 12px; margin: 2px;}
+/* your colors */
+.legend .realisation { background-color: #FF7F0E; }
+.legend .prevision { background-color: #1f77b4; }
+
+</style>
+<body>
+<!-- load the d3.js library -->    
+<script src="./d3.v3.min.js"></script>
+
+<script>
+// Set the dimensions of the canvas / graph
+var margin = {top: 30, right: 20, bottom: 30, left: 100},
+    width = 600 - margin.left - margin.right,
+    height = 270 - margin.top - margin.bottom;
+
+// Parse the date / time
+var parseDate = d3.time.format("%e/%m/%Y").parse; //
+
+// Set the ranges
+var x = d3.time.scale().range([0, width]);
+var y = d3.scale.linear().range([height, 10]);
+
+// Define the axes
+var xAxis = d3.svg.axis().scale(x)
+    .orient("bottom")   
+     .ticks(d3.time.months)
+    .tickSize(5, 0)
+    //.tickFormat(d3.time.format("%b%y"));
+	.tickFormat(d3.time.format("%b"));
+/*var xAxis = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .0);*/
+
+/*var xAxis = d3.svg.axis().scale(x)
+    .orient("bottom").ticks(5);*/
+
+var yAxis = d3.svg.axis().scale(y)
+    .orient("left").ticks(5);
+
+// Define the line
+var valueline = d3.svg.line()
+    .x(function(d) { return x(d.date); })   
+    .y(function(d) { return y(d.realisation); });
+
+var valueline2 = d3.svg.line()
+    .x(function(d) { return x(d.date); })   
+    .y(function(d) { return y(d.prevision); });
+	
+
+	
+// Adds the svg canvas
+var svg = d3.select("body")
+    .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+        .attr("transform", 
+              "translate(" + margin.left + "," + margin.top + ")");
+
+
+// Get the data
+d3.csv("charts.csv", function(error, data) {
+
+
+
+  data.forEach(function(d) {
+        d.date = parseDate(d.date);
+		//d.date = d.date
+        d.realisation = +d.realisation;
+        d.prevision = +d.prevision;
+		//d.New = +d.New;
+
+    });
+
+
+    // Scale the range of the data
+    x.domain(d3.extent(data, function(d) { return d.date; }));
+    y.domain([0, d3.max(data, function(d) { return Math.max(d.realisation, d.prevision ); })]);
+ //  y.domain([0, d3.max(data, function(d) { return Math.max(d.realisation, d.prevision , d.New ); })]);
+
+
+    // Add the valueline path.
+    svg.append("path")          //realisation Orange
+        .attr("class", "line")
+        .attr('stroke', '#FF7F0E')
+        .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseout", mouseout)      
+        .attr("d", valueline(data))  ;
+
+        // Add the scatterplot realisation
+    svg.selectAll("dot")
+        .data(data)
+      .enter().append("circle")
+        .attr("r", 3.5)
+        .attr("cx", function(d) { return x(d.date); })
+        .attr("cy", function(d) { return y(d.realisation); })
+        .style("fill",'#FF7F0E')
+        .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseout", mouseout); 
+
+
+
+  // Add the valueline2 path.
+    svg.append("path")        //prevision Blue
+        .attr("class", "line")
+        .attr('stroke', '#1f77b4')
+        .attr('stroke-width', 2)
+        .attr("d", valueline2(data))
+        .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseout", mouseout);
+
+
+        // Add the scatterplot previsions
+    svg.selectAll("dot")
+        .data(data)
+      .enter().append("circle")
+        .attr("r", 3.5)
+        .attr("cx", function(d) { return x(d.date); })
+        .attr("cy", function(d) { return y(d.prevision); })
+	// .attr("cy", function(d) { return y(d.New); })
+        .style("fill",'#1f77b4') 
+        .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseout", mouseout)
+        ; 
+
+// Add the valueline3 path.
+ /*  svg.append("path")        //prevision Blue
+        .attr("class", "line")
+        .attr('stroke', '#10f7b4')
+        .attr('stroke-width', 3)
+        .attr("d", valueline3(data))
+        .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseout", mouseout);
+		
+ // Add the scatterplot new
+    svg.selectAll("dot")
+        .data(data)
+      .enter().append("circle")
+        .attr("r", 3.5)
+        .attr("cx", function(d) { return x(d.date); })
+        .attr("cy", function(d) { return y(d.New); })
+        .style("fill",'#1077b4')
+        .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseout", mouseout)
+        ; 		*/
+		
+    // Add the X Axis
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+
+
+    // Add the Y Axis
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+
+
+
+
+
+var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("display", "none");
+
+function mouseover() {
+  div.style("display", "inline");
+}
+
+var max=d3.max(data, function(d) { return Math.max(d.realisation, d.prevision); });
+
+function mousemove() {
+        //Math.round(((max/210)*(210-d3.event.pageY)))
+      div.text(function(d,i){return Math.round(((max/200)*(247-d3.event.pageY)))})
+      .style("left", (d3.event.pageX - 34) + "px")
+      .style("top", (d3.event.pageY - 12) + "px");
+}
+
+
+function mouseout() {
+  div.style("display", "none");
+}
+
+
+});
+
+</script>
+
+<div id="Cpt">
+<ul class="legend">
+    <li><span class="realisation"></span> realisation</li>
+    <li><span class="prevision"></span> prevision</li>
+	
+</ul>
+</div>
+
+
+</body>

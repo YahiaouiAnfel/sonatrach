@@ -1,0 +1,142 @@
+<?php
+function CSV($infile,$outfile)
+{
+    $fileType = PHPExcel_IOFactory::identify($infile);
+    $objReader = PHPExcel_IOFactory::createReader($fileType);
+    $objReader->setReadDataOnly(true);   
+    $objPHPExcel = $objReader->load($infile);    
+    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV');
+    $objWriter->save($outfile);
+}
+require_once  'C:/xampp/htdocs/essai/Classes/PHPExcel/IOFactory.php';
+$objPHPExcel = PHPExcel_IOFactory::load("C:/xampp/htdocs/projetFinal/dossierCSV_EXCEL/NPT.xls");
+
+$sheet = $objPHPExcel->getSheet(3);
+$name_sheet = $objPHPExcel->getSheetNames();
+
+ $x=0;
+ $j=0;
+    $classeur = new PHPExcel;
+    $classeur->getProperties()->setCreator("Annie Gagnon");
+    $classeur->setActiveSheetIndex(0);
+    $feuille=$classeur->getActiveSheet();
+
+foreach($sheet->getRowIterator() as $row) {
+if($x===6){
+  
+ $ligne ="";$k=1; $z=0;
+   foreach ($row->getCellIterator() as $cell) {
+   
+          $ligne =$cell->getValue();
+          $feuille->setCellValueByColumnAndRow(0, $j,$ligne1);
+          $feuille->setCellValueByColumnAndRow($k, $j, $ligne);
+          $k++;
+      } 
+     
+     
+$j++;
+
+}
+if($x===4){
+  
+ $ligne1 ="";
+   foreach ($row->getCellIterator() as $cell) {
+   
+          $ligne1 =$cell->getValue();
+          
+      } 
+     
+ 
+$x++;
+}
+else {$x++;}
+}
+$writer = new PHPExcel_Writer_Excel2007($classeur);
+$records = 'C:\xampp\htdocs\projetFinal\dossierCSV_EXCEL\nptexp.xlsx';
+$writer->save($records);
+CSV('C:\xampp\htdocs\projetFinal\dossierCSV_EXCEL\nptexp.xlsx','C:\xampp\htdocs\projetFinal\dossierCSV_EXCEL\nptexp.csv');
+ $nom1="./dossierCSV_EXCEL/nptexp.xlsx";
+ unlink($nom1);
+?>
+<?php
+require_once  'C:/xampp/htdocs/essai/Classes/PHPExcel/IOFactory.php';
+$objPHPExcel = PHPExcel_IOFactory::load("C:/xampp/htdocs/projetFinal/dossierCSV_EXCEL/NPT.xls");
+
+$sheet = $objPHPExcel->getSheet(5);
+$name_sheet = $objPHPExcel->getSheetNames();
+
+ $x=0;
+ $j=0;
+    $classeur = new PHPExcel;
+    $classeur->getProperties()->setCreator("Annie Gagnon");
+    $classeur->setActiveSheetIndex(0);
+    $feuille=$classeur->getActiveSheet();
+
+foreach($sheet->getRowIterator() as $row) {
+if($x===6){
+  
+ $ligne ="";$k=1; $z=0;
+   foreach ($row->getCellIterator() as $cell) {
+   
+          $ligne =$cell->getValue();
+          $feuille->setCellValueByColumnAndRow(0, $j,$name_sheet[5]);
+          $feuille->setCellValueByColumnAndRow($k, $j, $ligne);
+          $k++;
+      } 
+     
+     
+$j++;
+
+}
+else {$x++;}
+}
+$writer = new PHPExcel_Writer_Excel2007($classeur);
+$records = 'C:\xampp\htdocs\projetFinal\dossierCSV_EXCEL\nptdev.xlsx';
+$writer->save($records);
+CSV('C:\xampp\htdocs\projetFinal\dossierCSV_EXCEL\nptdev.xlsx','C:\xampp\htdocs\projetFinal\dossierCSV_EXCEL\nptdev.csv');
+ $nom1="./dossierCSV_EXCEL/nptdev.xlsx";
+ unlink($nom1);
+ unlink("./dossierCSV_EXCEL/NPT.xls");
+?>
+<?php/*
+$date = new DateTime();
+if (($handle2 = fopen("dossierCSV_EXCEL/appel_offre.csv", "r")) !== FALSE) { 
+  $sql="";
+  $c2=0;
+  $i=0;
+   while(!(feof($handle2))){ 
+    $data2 = fgetcsv($handle2,","); 
+    $requete1= $bdd->prepare("SELECT * FROM appel_offres");
+        $requete1->execute(array());
+        $row = $requete1->fetchAll(PDO::FETCH_ASSOC);
+         $existe= $requete1->rowCount();
+         $l=0;$trouve=0;
+
+        while (($l<$existe)&&($trouve===0)){
+            if(($data2[$c2+18]===$row[$l]["Num_Visa_definitive"])&&($data2[$c2+8]===$row[$l]["Numero_Appel_Offres"])&&($data2[$c2]===$row[$l]["historique"])){
+              $trouve=1;
+              break;
+            }
+            else{
+              $l++;
+            }
+        }
+    if($trouve===1){
+$requete1= $bdd->prepare("UPDATE appel_offres SET date=?,Items=?,demande=?,datereceptionrequete=?,Date_introduction_lancement_DAO_Prequalif=?,Num_visa_conformite_DAO=?,Num_BAOSEM_date_publication=?,Date_ouverture_Cop_Technique=?,Decision=?,Date_debut_travaux_CEOT=?,Date_fin_travaux_CEOT=?,Date_ouverture_COP_Financiere=?,Num_BAOSEM_date_attribution_provisoire=?,Observation=? WHERE  Num_Visa_definitive=? AND Numero_Appel_Offres=? AND historique=?");
+        $requete1->execute(array($date->format('Y-m-d'),$data2[$c2+5],$data2[$c2+6],$data2[$c2+7],$data2[$c2+9],$data2[$c2+10],$data2[$c2+11],$data2[$c2+12],$data2[$c2+13],$data2[$c2+14],$data2[$c2+15],$data2[$c2+16],$data2[$c2+17],$data2[$c2+19],$data2[$c2+18],$data2[$c2+8],$data2[$c2]));
+
+    }
+   else{
+    
+    $requete2= $bdd->prepare("INSERT INTO appel_offres (date,Items,demande,datereceptionrequete,Numero_Appel_Offres,Date_introduction_lancement_DAO_Prequalif,Num_visa_conformite_DAO,Num_BAOSEM_date_publication,Date_ouverture_Cop_Technique,Decision,Date_debut_travaux_CEOT,Date_fin_travaux_CEOT,Date_ouverture_COP_Financiere,Num_BAOSEM_date_attribution_provisoire,Num_Visa_definitive,Observation,historique) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        $requete2->execute(array($date->format('Y-m-d'),$data2[$c2+5],$data2[$c2+6],$data2[$c2+7],$data2[$c2+8],$data2[$c2+9],$data2[$c2+10],$data2[$c2+11],$data2[$c2+12],$data2[$c2+13],$data2[$c2+14],$data2[$c2+15],$data2[$c2+16],$data2[$c2+17],$data2[$c2+18],$data2[$c2+19],$data2[$c2]));
+      } 
+       $i++;
+  }
+    fclose($handle2);
+}
+if(file_exists ('dossierCSV_EXCEL/appel_offre.csv')){
+  $nom1="./dossierCSV_EXCEL/appel_offre.csv";
+unlink($nom1);
+}*/
+?>

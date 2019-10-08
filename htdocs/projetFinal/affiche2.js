@@ -1,0 +1,44 @@
+//fermer les fenetres
+$(function(){
+$("#icone1").click(function(){
+    $(".pan1").hide(1000);
+     $("#icone1").hide();
+     $("#icone11").hide();
+});});
+$(function(){
+$("#icone2").click(function(){
+    $(".pan2").hide(1000);
+$("#icone2").hide();
+     $("#icone12").hide();
+});});
+$(function(){
+$("#icone3").click(function(){
+    $(".pan3").hide(1000);
+    $("#icone3").hide();
+     $("#icone13").hide();
+});});
+$(function(){
+$("#icone4").click(function(){
+    $(".pan4").hide(1000);
+    $("#icone4").hide();
+     $("#icone14").hide();
+});});
+$(function(){
+$("#icone5").click(function(){
+    $(".pan5").hide(1000);
+    $("#icone5").hide();
+     $("#icone15").hide();
+});});
+$(function(){
+$("#icone6").click(function(){
+    $(".pan6").hide(1000);
+    $("#icone6").hide();
+     $("#icone16").hide();
+});});
+$(function(){
+$("#icone7").click(function(){
+    $(".pan7").hide(1000);
+    $("#icone7").hide();
+     $("#icone17").hide();
+});});
+   
